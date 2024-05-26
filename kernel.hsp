@@ -12257,7 +12257,7 @@ maxprocess=256
 sdim testctx,4096,maxprocess
 dim testctxrcg,1024,2,maxprocess
 sdim regcontext,256,maxprocess
-dim ptr4execfirst,maxprocess
+ldim ptr4execfirst,maxprocess
 sdim ptr4eZ80mem2,4096*4,maxprocess
 dim processattribute,maxprocess
 repeat maxprocess
@@ -12266,8 +12266,9 @@ loop
 
 ldim initprocess,1
 lpoke initprocess,0,_faddproc("init.ax")
-mref stat4set,64
-lpoke stat4set,0,varptr(svcstruct)
+/*mref stat4set,64
+lpoke stat4set,0,varptr(svcstruct)*/
+gosub *processexecutant_as
 gosub initprocess
 
 repeat
@@ -12302,8 +12303,10 @@ return nowpid4system
 swbreak
 case 1
 pid4crproc=addproc(*processexecutant)
+if pid4crproc!-1{
 memcpy ptr4eZ80mem2(pid4crproc),ptr4eZ80mem,4096*4,0,0
-ptr4execfirst(pid4crproc)=svcstruct(1)
+lpoke ptr4execfirst(pid4crproc),0,svcstruct(1)
+}
 return pid4crproc
 swbreak
 case 2
@@ -12359,8 +12362,7 @@ eZ80_Proc_func
 goto *eZ80Process
 
 *processexecutant
-ldim lbl4exec,1:lpoke lbl4exec,0,ptr4execfirst(nowpid4system)
-mref stat4set,64
-lpoke stat4set,0,varptr(svcstruct)
-goto lbl4exec
-return
+gosub *processexecutant_as
+goto ptr4execfirst(nowpid4system)
+*processexecutant_as
+return varptr(svcstruct)
