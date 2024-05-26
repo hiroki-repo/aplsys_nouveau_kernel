@@ -12328,6 +12328,10 @@ swbreak
 case 7
 return varptr(regcontext(svcstruct(1)))
 swbreak
+case 8
+cpu_reset
+memcpy regcontext(svcstruct(1)),eZ80_Reg,256,0,0
+swbreak
 swend
 if svcstruct(1020)!=0{
 mref stat4set,64
