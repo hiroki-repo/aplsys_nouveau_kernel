@@ -12314,6 +12314,10 @@ case 3
 dupptr stringfromptx,svcstruct(1),65536,2
 return _faddproc(stringfromptx)
 swbreak
+case 4
+processattribute(svcstruct(1))=svcstruct(2)
+return 0
+swbreak
 swend
 if svcstruct(1020)!=0{
 mref stat4set,64
