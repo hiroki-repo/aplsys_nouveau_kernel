@@ -12305,7 +12305,16 @@ case 1
 pid4crproc=addproc(*processexecutant)
 if pid4crproc!-1{
 memcpy ptr4eZ80mem2(pid4crproc),ptr4eZ80mem,4096*4,0,0
-lpoke ptr4execfirst(pid4crproc),0,svcstruct(1)
+	if svcstruct(1)<0x1000000{
+	cpu_reset
+	poke eZ80_Reg,0x69,0x18
+	poke eZ80_Reg,0x70,0x0C
+	memcpy regcontext(svcstruct(1)),eZ80_Reg,256,0,0
+	processattribute(pid4crproc)|=1
+	nulllooper=*lb_nulllooper:lpoke ptr4execfirst(pid4crproc),0,lpeek(nulllooper,0)
+	}else{
+	lpoke ptr4execfirst(pid4crproc),0,svcstruct(1)
+	}
 }
 return pid4crproc
 swbreak
@@ -12315,7 +12324,11 @@ terproc svcstruct(1)
 return 0
 swbreak
 case 3
+if svcstruct(1)<0x1000000{
+dupptr stringfromptx,svcstruct(1)|0x40000000,65536,2
+}else{
 dupptr stringfromptx,svcstruct(1),65536,2
+}
 return _faddproc(stringfromptx)
 swbreak
 case 4
@@ -12368,3 +12381,6 @@ gosub *processexecutant_as
 goto ptr4execfirst(nowpid4system)
 *processexecutant_as
 return varptr(svcstruct)
+
+*lb_nulllooper
+goto *lb_nulllooper
