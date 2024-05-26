@@ -12216,7 +12216,7 @@ init_control
 #defcfunc addproc label prm_0
 nowpid=-1
 repeat maxprocess@
-if lpeek(testctx@(nowpid),0)=0{nowpid=cnt:break}
+if lpeek(testctx@(cnt),0)=0{nowpid=cnt:break}
 loop
 if nowpid!=-1{
 memset testctx@(nowpid),0,4096,0
@@ -12333,6 +12333,8 @@ return varptr(regcontext(svcstruct(1)))
 swbreak
 case 8
 cpu_reset
+poke eZ80_Reg,0x69,0x18
+poke eZ80_Reg,0x70,0x0C
 memcpy regcontext(svcstruct(1)),eZ80_Reg,256,0,0
 swbreak
 swend
@@ -12350,7 +12352,7 @@ return syscallhandlerx()
 memaccessptrset varptr(ptr4eZ80mem2(nowpid4system)),0x1000
 cpu_reset
 eZ80_pfcontext=peek(eZ80_Reg,0x68)
-cpu_set_speed 500000
+cpu_set_speed 50000
 memcpy eZ80_Reg,regcontext(nowpid4system),256,0,0
 //poke eZ80_Reg,0x68,eZ80_pfcontext
 ret=cpu_execute()

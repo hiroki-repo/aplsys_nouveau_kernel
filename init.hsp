@@ -1,14 +1,35 @@
 dupptr syscallptx,stat,4096,4
-ldim svcptx4call,1:lpoke syscallptx,0,syscallptx(1021)
+ldim svcptx4call,1:lpoke svcptx4call,0,syscallptx(1021)
 dupptr memory,0x40000000,0x1000000,2
-poke memory
+lpoke syscallptx(1023),0,lpeek(*ez80machandler,0)
+
 lpoke syscallptx(0),0,1
 lpoke syscallptx(1),0,lpeek(*codetmp,0)
-gosub syscallptx
-lpoke syscallptx(1),0,stat
+gosub svcptx4call
+pid4ez80proc=stat
+//dialog stat
+poke memory,0x0000,0xc3
+lpoke memory,0x0001,0x010000
+poke memory,0x0004,0xd3
+poke memory,0x0005,0x00
 lpoke syscallptx(0),0,4
+lpoke syscallptx(1),0,pid4ez80proc
 lpoke syscallptx(2),0,1
-gosub syscallptx
+gosub svcptx4call
+lpoke syscallptx(0),0,8
+lpoke syscallptx(1),0,pid4ez80proc
+gosub svcptx4call
+//goto *codetmp
 return 0
 *codetmp
+/*pos rnd(640),rnd(480)
+color rnd(256),rnd(256),rnd(256)
+boxf rnd(640),rnd(480),rnd(640),rnd(480)*/
 goto *codetmp
+
+*ez80machandler
+dupptr argv,stat,12,4
+if (argv(0)&0xFF)=0{mes "Accessed I/O Port 0x00!"}
+await
+return 0
+
