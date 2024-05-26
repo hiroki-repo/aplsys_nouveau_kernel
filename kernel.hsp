@@ -12325,6 +12325,9 @@ swbreak
 case 6
 return varptr(ptr4eZ80mem2(svcstruct(1)))
 swbreak
+case 7
+return varptr(regcontext(svcstruct(1)))
+swbreak
 swend
 if svcstruct(1020)!=0{
 mref stat4set,64
@@ -12342,7 +12345,7 @@ cpu_reset
 eZ80_pfcontext=peek(eZ80_Reg,0x68)
 cpu_set_speed 500000
 memcpy eZ80_Reg,regcontext(nowpid4system),256,0,0
-poke eZ80_Reg,0x68,eZ80_pfcontext
+//poke eZ80_Reg,0x68,eZ80_pfcontext
 ret=cpu_execute()
 memcpy regcontext(nowpid4system),eZ80_Reg,256,0,0
 return
