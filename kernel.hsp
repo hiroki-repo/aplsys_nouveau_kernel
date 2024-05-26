@@ -12295,13 +12295,14 @@ goto ptr4ez80
 *lb_ez80macalt
 return 0
 
-*lb_svchandler
+#defcfunc syscallhandlerx
 switch svcstruct(0)
 case 0
 return nowpid4system
 swbreak
 case 1
 pid4crproc=addproc(*processexecutant)
+memcpy ptr4eZ80mem2(pid4crproc),ptr4eZ80mem,4096*4,0,0
 ptr4execfirst(pid4crproc)=svcstruct(1)
 return pid4crproc
 swbreak
@@ -12321,6 +12322,9 @@ swbreak
 case 5
 return processattribute(svcstruct(1))
 swbreak
+case 6
+return varptr(ptr4eZ80mem2(svcstruct(1)))
+swbreak
 swend
 if svcstruct(1020)!=0{
 mref stat4set,64
@@ -12329,6 +12333,8 @@ ldim svchandling4ext,1:lpoke svchandling4ext,0,svcstruct(1020)
 goto svchandling4ext
 }
 return -1
+*lb_svchandler
+return syscallhandlerx()
 
 #deffunc eZ80_Proc_func
 memaccessptrset varptr(ptr4eZ80mem2(nowpid4system)),0x1000
