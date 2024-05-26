@@ -1,0 +1,14 @@
+dupptr syscallptx,stat,4096,4
+ldim svcptx4call,1:lpoke syscallptx,0,syscallptx(1021)
+dupptr memory,0x40000000,0x1000000,2
+poke memory
+lpoke syscallptx(0),0,1
+lpoke syscallptx(1),0,lpeek(*codetmp,0)
+gosub syscallptx
+lpoke syscallptx(1),0,stat
+lpoke syscallptx(0),0,4
+lpoke syscallptx(2),0,1
+gosub syscallptx
+return 0
+*codetmp
+goto *codetmp
