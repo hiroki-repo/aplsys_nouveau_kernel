@@ -1,0 +1,11 @@
+fname="eZ80.dll"
+varname="ez80dlldata"
+exist fname
+strsize2=strsize
+sdim data,strsize2
+bload fname,data
+logmesx=""
+repeat strsize2/16
+logmesx+=varname+"("+str(cnt*4)+")="+lpeek(data,(cnt*16)+(4*0))+","+lpeek(data,(cnt*16)+(4*1))+","+lpeek(data,(cnt*16)+(4*2))+","+lpeek(data,(cnt*16)+(4*3))+"\n"
+loop
+logmes logmesx
